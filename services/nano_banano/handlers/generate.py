@@ -16,6 +16,7 @@ from ..config import (
     FAL_ENDPOINTS, FAL_PRICES_USD, ESTIMATED_GENERATION_TIME,
     PROGRESS_FRAMES, DEFAULT_USER_SETTINGS
 )
+from .. import messages as msg
 from .. import keyboards as kb
 from ..api.fal_client import NanoBananoClient
 from ..database import get_session, Generation
