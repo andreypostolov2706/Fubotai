@@ -10,6 +10,9 @@ aiosqlite==0.19.0
 # HTTP
 aiohttp==3.10.11
 
+# FAL.ai client
+fal-client==0.5.6
+
 # Environment
 python-dotenv==1.0.0
 
