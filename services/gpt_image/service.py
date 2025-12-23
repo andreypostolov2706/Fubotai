@@ -607,7 +607,6 @@ class GPTImageService(BaseService):
         
         try:
             result = await currency_converter.convert_to_gton(Decimal(str(usd)), "USD")
-            # convert_to_gton возвращает ConversionResult, нужно извлечь amount
             gton = result.amount if hasattr(result, 'amount') else result
             return Decimal(str(math.ceil(float(gton) * 10000) / 10000))
         except Exception as e:
