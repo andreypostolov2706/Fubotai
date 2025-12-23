@@ -28,11 +28,10 @@ def _cb(action: str, *params) -> str:
 def main_menu_keyboard() -> list:
     """Главное меню сервиса"""
     return [
-        [_btn("✨ Создать изображение", _cb("generate"))],
-        [_btn("🖼 Редактировать фото", _cb("edit"))],
-        [_btn("📂 Мои генерации", _cb("history"))],
+        [_btn("✨ Текст → Картинка", _cb("generate"))],
+        [_btn("🖼 Фото → Картинка", _cb("edit"))],
         [_btn("⚙️ Настройки", _cb("settings"))],
-        [_btn("◀️ Главное меню", "main_menu")],
+        [_btn("◀️ Назад", "main_menu")],
     ]
 
 
@@ -41,8 +40,9 @@ def main_menu_keyboard() -> list:
 def confirm_keyboard(action: str = "generate") -> list:
     """Клавиатура подтверждения генерации"""
     return [
-        [_btn("🎨 Генерировать", _cb("confirm", action))],
-        [_btn("⚙️ Изменить", _cb("edit_params", action))],
+        [_btn("✅ Генерировать", _cb("confirm", action))],
+        [_btn("✏️ Изменить промпт", _cb("generate"))],
+        [_btn("⚙️ Настройки", _cb("edit_params", action))],
         [_btn("❌ Отмена", _cb("cancel"))],
     ]
 

@@ -22,11 +22,10 @@ def _cb(action: str, *params) -> str:
 def main_menu_keyboard() -> list:
     """Главное меню сервиса"""
     return [
-        [_btn("✨ Создать видео", _cb("generate"))],
-        [_btn("📷 Анимировать фото", _cb("image_to_video"))],
-        [_btn("📂 Мои генерации", _cb("history"))],
+        [_btn("✨ Текст → Видео", _cb("generate"))],
+        [_btn("🖼 Фото → Видео", _cb("image_to_video"))],
         [_btn("⚙️ Настройки", _cb("settings"))],
-        [_btn("◀️ Главное меню", "main_menu")],
+        [_btn("◀️ Назад", "main_menu")],
     ]
 
 
@@ -57,8 +56,9 @@ def skip_negative_keyboard() -> list:
 def confirm_generation_keyboard() -> list:
     """Подтверждение генерации"""
     return [
-        [_btn("✅ Создать", _cb("confirm", "create"))],
-        [_btn("✏️ Изменить", _cb("confirm", "edit"))],
+        [_btn("✅ Генерировать", _cb("confirm", "create"))],
+        [_btn("✏️ Изменить промпт", _cb("generate"))],
+        [_btn("⚙️ Настройки", _cb("confirm", "edit"))],
         [_btn("❌ Отмена", _cb("cancel"))],
     ]
 
