@@ -118,10 +118,19 @@ class FalClient:
             )
             
         except Exception as e:
+            error_str = str(e)
             logger.error(f"Veo: Ошибка генерации: {e}")
+            
+            # Обработка content policy violation
+            if "content_policy_violation" in error_str or "content checker" in error_str.lower():
+                return GenerationResult(
+                    success=False,
+                    error="❌ Ваш запрос содержит неприемлемый контент и не может быть обработан."
+                )
+            
             return GenerationResult(
                 success=False,
-                error=str(e)
+                error=error_str
             )
     
     async def image_to_video(
@@ -211,10 +220,19 @@ class FalClient:
             )
             
         except Exception as e:
+            error_str = str(e)
             logger.error(f"Veo: Ошибка Image-to-Video: {e}")
+            
+            # Обработка content policy violation
+            if "content_policy_violation" in error_str or "content checker" in error_str.lower():
+                return GenerationResult(
+                    success=False,
+                    error="❌ Ваш запрос содержит неприемлемый контент и не может быть обработан."
+                )
+            
             return GenerationResult(
                 success=False,
-                error=str(e)
+                error=error_str
             )
     
     async def upload_image(self, image_data: bytes) -> Optional[str]:

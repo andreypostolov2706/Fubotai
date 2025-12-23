@@ -69,10 +69,19 @@ class FalClient:
             }
             
         except Exception as e:
+            error_str = str(e)
             logger.error(f"Kling: Ошибка Text-to-Video: {e}")
+            
+            # Обработка content policy violation
+            if "content_policy_violation" in error_str or "content checker" in error_str.lower():
+                return {
+                    "success": False,
+                    "error": "❌ Ваш запрос содержит неприемлемый контент и не может быть обработан.",
+                }
+            
             return {
                 "success": False,
-                "error": str(e),
+                "error": error_str,
             }
     
     async def image_to_video(
@@ -124,10 +133,19 @@ class FalClient:
             }
             
         except Exception as e:
+            error_str = str(e)
             logger.error(f"Kling: Ошибка Image-to-Video: {e}")
+            
+            # Обработка content policy violation
+            if "content_policy_violation" in error_str or "content checker" in error_str.lower():
+                return {
+                    "success": False,
+                    "error": "❌ Ваш запрос содержит неприемлемый контент и не может быть обработан.",
+                }
+            
             return {
                 "success": False,
-                "error": str(e),
+                "error": error_str,
             }
     
     async def upload_image(self, image_data: bytes) -> Optional[str]:
