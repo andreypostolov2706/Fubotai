@@ -17,6 +17,8 @@ engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
+_db_initialized = False
+
 
 def init_db():
     """Initialize database and create tables"""
@@ -27,4 +29,8 @@ def init_db():
 
 def get_session():
     """Get database session"""
+    global _db_initialized
+    if not _db_initialized:
+        init_db()
+        _db_initialized = True
     return SessionLocal()
