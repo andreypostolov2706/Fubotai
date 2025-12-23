@@ -181,9 +181,9 @@ class SoraService(BaseService):
                 value = params.get("0") or params.get("id") or "0"
                 return await self._show_generation(user_id, int(value))
             
-            elif action == "retry":
+            elif action == "resend":
                 value = params.get("0") or params.get("id") or "0"
-                return await self._retry_generation(user_id, int(value))
+                return await self._resend_result(user_id, int(value), context)
             
             # noop
             elif action == "noop":
@@ -583,3 +583,46 @@ class SoraService(BaseService):
         if result.success:
             return result.gton_amount
         return Decimal("0")
+    
+    async def _resend_result(self, user_id: int, generation_id: int, context) -> Response:
+        """Повторная отправка результата без генерации"""
+        from .database import get_session, VideoGeneration
+        from core.platform.telegram.media_sender import send_video_robust
+        
+        session = await get_session()
+        try:
+            gen = await session.get(VideoGeneration, generation_id)
+            
+            if not gen or gen.user_id != user_id:
+                return Response(text="❌ Генерация не найдена", keyboard=kb.back_to_main_keyboard())
+            
+            if not gen.video_url and not gen.file_id:
+                return Response(text="❌ Результат не сохранён", keyboard=kb.back_to_main_keyboard())
+            
+            if context and context.bot:
+                try:
+                    await send_video_robust(
+                        context.bot,
+                        chat_id=context.chat_id,
+                        video_url=gen.video_url,
+                        file_id=gen.file_id,
+                        caption="✅ Файл отправлен повторно",
+                        reply_markup=None,
+                    )
+                    
+                    return Response(
+                        text="✅ Готово!",
+                        keyboard=kb.generation_result_keyboard(generation_id),
+                        action="edit"
+                    )
+                except Exception as e:
+                    logger.error(f"Sora resend error: {e}")
+                    return Response(
+                        text=f"❌ Ошибка отправки: {e}",
+                        keyboard=kb.generation_result_keyboard(generation_id)
+                    )
+            
+            return Response(text="❌ Ошибка контекста", keyboard=kb.back_to_main_keyboard())
+            
+        finally:
+            await session.close()

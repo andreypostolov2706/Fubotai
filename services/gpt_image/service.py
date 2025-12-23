@@ -285,21 +285,10 @@ class GPTImageService(BaseService):
                 
                 return Response(text=result["text"], keyboard=result["keyboard"])
             
-            # Повтор генерации
-            elif action == "repeat":
+            # Повторная отправка результата (без генерации)
+            elif action == "resend":
                 gen_id = int(params.get("0", 0))
-                gen_data = await self.history_handler.get_generation_for_repeat(user_id, gen_id)
-                
-                if gen_data:
-                    if gen_data["mode"] == "image_to_image":
-                        await self.core.set_user_state(user_id, "confirm_edit", gen_data)
-                        result = await self.edit_handler.show_confirmation(user_id, gen_data)
-                    else:
-                        await self.core.set_user_state(user_id, "confirm_generation", gen_data)
-                        result = await self.generate_handler.show_confirmation(user_id, gen_data)
-                    return Response(text=result["text"], keyboard=result["keyboard"])
-                
-                return Response(text="❌ Генерация не найдена", keyboard=kb.back_keyboard("history"))
+                return await self._resend_result(user_id, gen_id, context)
             
             # Удаление
             elif action == "delete":
@@ -623,3 +612,47 @@ class GPTImageService(BaseService):
         except Exception as e:
             logger.error(f"GTON to fiat conversion error: {e}")
             return 0.0
+    
+    async def _resend_result(self, user_id: int, generation_id: int, context: CallbackContext) -> Response:
+        """Повторная отправка результата без генерации"""
+        session = get_session()
+        try:
+            gen = session.query(ImageGeneration).filter(
+                ImageGeneration.id == generation_id,
+                ImageGeneration.user_id == user_id
+            ).first()
+            
+            if not gen:
+                return Response(text="❌ Генерация не найдена", keyboard=kb.main_menu_keyboard())
+            
+            if not gen.image_url and not gen.file_id:
+                return Response(text="❌ Результат не сохранён", keyboard=kb.main_menu_keyboard())
+            
+            # Отправляем результат повторно
+            if context and context.bot:
+                try:
+                    await send_photo_robust(
+                        context.bot,
+                        chat_id=context.chat_id,
+                        photo_url=gen.image_url,
+                        file_id=gen.file_id,
+                        caption="✅ Файл отправлен повторно",
+                        reply_markup=None,
+                    )
+                    
+                    return Response(
+                        text="✅ Готово!",
+                        keyboard=kb.result_keyboard(generation_id),
+                        action="edit"
+                    )
+                except Exception as e:
+                    logger.error(f"GPT-Image resend error: {e}")
+                    return Response(
+                        text=f"❌ Ошибка отправки: {e}",
+                        keyboard=kb.result_keyboard(generation_id)
+                    )
+            
+            return Response(text="❌ Ошибка контекста", keyboard=kb.main_menu_keyboard())
+            
+        finally:
+            session.close()

@@ -306,11 +306,10 @@ class NanoBananoService(BaseService):
                 
                 return Response(text=result["text"], keyboard=result["keyboard"])
             
-            # Повторить генерацию
-            elif action == "repeat":
+            # Повторная отправка результата (без генерации)
+            elif action == "resend":
                 gen_id = int(params.get("0") or params.get("id", 0))
-                result = await self.generate_handler.repeat_generation(user_id, gen_id)
-                return Response(text=result["text"], keyboard=result["keyboard"])
+                return await self._resend_result(user_id, gen_id, context)
             
             # Удалить генерацию
             elif action == "delete":
@@ -583,6 +582,53 @@ class NanoBananoService(BaseService):
                     "file_id": gen.file_id,
                 },
             }
+    
+    async def _resend_result(self, user_id: int, generation_id: int, context) -> Response:
+        """Повторная отправка результата без генерации"""
+        from .database import get_session, Generation
+        from core.platform.telegram.media_sender import send_photo_robust
+        
+        session = get_session()
+        try:
+            gen = session.query(Generation).filter(
+                Generation.id == generation_id,
+                Generation.user_id == user_id
+            ).first()
+            
+            if not gen:
+                return Response(text="❌ Генерация не найдена", keyboard=kb.main_menu_keyboard())
+            
+            if not gen.image_url and not gen.file_id:
+                return Response(text="❌ Результат не сохранён", keyboard=kb.main_menu_keyboard())
+            
+            # Отправляем результат повторно
+            if context and context.bot:
+                try:
+                    await send_photo_robust(
+                        context.bot,
+                        chat_id=context.chat_id,
+                        photo_url=gen.image_url,
+                        file_id=gen.file_id,
+                        caption="✅ Файл отправлен повторно",
+                        reply_markup=None,
+                    )
+                    
+                    return Response(
+                        text="✅ Готово!",
+                        keyboard=kb.generation_result_keyboard(generation_id),
+                        action="edit"
+                    )
+                except Exception as e:
+                    logger.error(f"Nano Banano resend error: {e}")
+                    return Response(
+                        text=f"❌ Ошибка отправки: {e}",
+                        keyboard=kb.generation_result_keyboard(generation_id)
+                    )
+            
+            return Response(text="❌ Ошибка контекста", keyboard=kb.main_menu_keyboard())
+            
+        finally:
+            session.close()
     
     async def _usd_to_gton(self, usd: float) -> float:
         """Конвертировать USD в GTON"""

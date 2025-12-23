@@ -131,9 +131,9 @@ def settings_audio_keyboard(current: str) -> list:
 def result_keyboard(generation_id: int) -> list:
     """Клавиатура после генерации"""
     return [
-        [_btn("🔄 Повторить", _cb("repeat", generation_id)), _btn("📢 В галерею", _cb("publish", generation_id))],
-        [_btn("🎬 Новая генерация", _cb("generate"))],
-        [_btn("◀️ В меню", _cb("main"))],
+        [_btn("✏️ Изменить промпт", _cb("generate"))],
+        [_btn("📥 Файл не пришёл", _cb("resend", generation_id))],
+        [_btn("◀️ Назад", _cb("main"))],
     ]
 
 

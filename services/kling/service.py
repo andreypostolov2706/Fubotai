@@ -265,21 +265,10 @@ class KlingService(BaseService):
                 
                 return Response(text=result["text"], keyboard=result["keyboard"])
             
-            # Повтор генерации
-            elif action == "repeat":
+            # Повторная отправка результата (без генерации)
+            elif action == "resend":
                 gen_id = int(params.get("0", 0))
-                gen_data = await self.history_handler.get_generation_for_repeat(user_id, gen_id)
-                
-                if gen_data:
-                    if gen_data["mode"] == "image_to_video":
-                        await self.core.set_user_state(user_id, "confirm_edit", gen_data)
-                        result = await self.edit_handler.show_confirmation(user_id, gen_data)
-                    else:
-                        await self.core.set_user_state(user_id, "confirm_generation", gen_data)
-                        result = await self.generate_handler.show_confirmation(user_id, gen_data)
-                    return Response(text=result["text"], keyboard=result["keyboard"])
-                
-                return Response(text="❌ Генерация не найдена", keyboard=kb.back_keyboard("history"))
+                return await self._resend_result(user_id, gen_id, context)
             
             # Удаление
             elif action == "delete":
@@ -621,3 +610,49 @@ class KlingService(BaseService):
         except Exception as e:
             logger.error(f"GTON to fiat conversion error: {e}")
             return 0.0
+    
+    async def _resend_result(self, user_id: int, generation_id: int, context) -> Response:
+        """Повторная отправка результата без генерации"""
+        from .database import get_session, VideoGeneration
+        from core.platform.telegram.media_sender import send_video_robust
+        
+        session = get_session()
+        try:
+            gen = session.query(VideoGeneration).filter(
+                VideoGeneration.id == generation_id,
+                VideoGeneration.user_id == user_id
+            ).first()
+            
+            if not gen:
+                return Response(text="❌ Генерация не найдена", keyboard=kb.main_menu_keyboard())
+            
+            if not gen.video_url and not gen.file_id:
+                return Response(text="❌ Результат не сохранён", keyboard=kb.main_menu_keyboard())
+            
+            if context and context.bot:
+                try:
+                    await send_video_robust(
+                        context.bot,
+                        chat_id=context.chat_id,
+                        video_url=gen.video_url,
+                        file_id=gen.file_id,
+                        caption="✅ Файл отправлен повторно",
+                        reply_markup=None,
+                    )
+                    
+                    return Response(
+                        text="✅ Готово!",
+                        keyboard=kb.result_keyboard(generation_id),
+                        action="edit"
+                    )
+                except Exception as e:
+                    logger.error(f"Kling resend error: {e}")
+                    return Response(
+                        text=f"❌ Ошибка отправки: {e}",
+                        keyboard=kb.result_keyboard(generation_id)
+                    )
+            
+            return Response(text="❌ Ошибка контекста", keyboard=kb.main_menu_keyboard())
+            
+        finally:
+            session.close()

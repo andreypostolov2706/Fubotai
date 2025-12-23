@@ -71,16 +71,11 @@ def edit_params_keyboard() -> list:
 
 def generation_result_keyboard(generation_id: int, gallery_enabled: bool = False) -> list:
     """Результат генерации"""
-    keyboard = [
-        [_btn("🔄 Ещё раз", _cb("repeat", generation_id))],
+    return [
+        [_btn("✏️ Изменить промпт", _cb("generate"))],
+        [_btn("📥 Файл не пришёл", _cb("resend", generation_id))],
+        [_btn("◀️ Назад", _cb("main"))],
     ]
-    
-    if gallery_enabled:
-        keyboard.append([_btn("📤 В галерею", _cb("gallery", "confirm", generation_id))])
-    
-    keyboard.append([_btn("◀️ Меню", _cb("main"))])
-    
-    return keyboard
 
 
 def insufficient_balance_keyboard() -> list:

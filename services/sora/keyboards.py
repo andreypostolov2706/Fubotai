@@ -126,6 +126,7 @@ def history_keyboard(generations: list, page: int = 0, per_page: int = 5) -> lis
 def generation_result_keyboard(generation_id: int) -> list:
     """Клавиатура результата генерации"""
     return [
-        [_btn("🔄 Повторить", _cb("retry", str(generation_id)))],
-        [_btn("◀️ В меню", _cb("main"))],
+        [_btn("✏️ Изменить промпт", _cb("generate"))],
+        [_btn("📥 Файл не пришёл", _cb("resend", str(generation_id)))],
+        [_btn("◀️ Назад", _cb("main"))],
     ]
