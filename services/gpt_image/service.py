@@ -631,11 +631,11 @@ class GPTImageService(BaseService):
             # Отправляем результат повторно
             if context and context.bot:
                 try:
+                    photo = gen.file_id if gen.file_id else gen.image_url
                     await send_photo_robust(
                         context.bot,
                         chat_id=context.chat_id,
-                        photo_url=gen.image_url,
-                        file_id=gen.file_id,
+                        photo=photo,
                         caption="✅ Файл отправлен повторно",
                         reply_markup=None,
                     )
