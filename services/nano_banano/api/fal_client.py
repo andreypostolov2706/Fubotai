@@ -259,3 +259,7 @@ class FalClient:
         except Exception as e:
             logger.error(f"Nano Banano: Ошибка загрузки изображения: {e}")
             return None
+
+
+# Backward-compatible alias used by handlers
+NanoBananoClient = FalClient
