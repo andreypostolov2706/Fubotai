@@ -441,7 +441,7 @@ class GPTImageService(BaseService):
                     prompt=state_data["prompt"],
                     image_url=state_data["input_image_url"],
                     quality=state_data["quality"],
-                    image_size=state_data.get("image_size", "auto"),
+                    image_size=state_data.get("image_size", "1024x1024"),
                     background=state_data.get("background", "auto"),
                     output_format=state_data.get("output_format", "png"),
                 )

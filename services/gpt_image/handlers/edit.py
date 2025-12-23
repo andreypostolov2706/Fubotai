@@ -66,7 +66,7 @@ class EditHandler:
         state_data.update({
             "prompt": prompt.strip(),
             "quality": settings["quality"],
-            "image_size": "auto",  # Для edit используем auto
+            "image_size": settings["image_size"],
             "background": settings["background"],
             "output_format": settings["output_format"],
         })

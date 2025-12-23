@@ -88,7 +88,7 @@ class FalClient:
         prompt: str,
         image_url: str,
         quality: str = "high",
-        image_size: str = "auto",
+        image_size: str = "1024x1024",
         background: str = "auto",
         output_format: str = "png",
         num_images: int = 1,
