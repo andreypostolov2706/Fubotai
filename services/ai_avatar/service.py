@@ -258,7 +258,7 @@ class AIAvatarService(BaseService):
     async def _show_main_menu(self, user_id: int) -> Response:
         """Показать главное меню сервиса"""
         # Очищаем состояние
-        await self.core.user_state.clear(user_id, f"{SERVICE_ID}:*")
+        await self.core.clear_user_state(user_id)
         
         return Response(
             text=msg.MAIN_MENU,
