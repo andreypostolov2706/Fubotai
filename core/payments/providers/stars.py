@@ -9,6 +9,8 @@ Stars — внутренняя валюта Telegram для цифровых т�
 2. pre_checkout_query — подтвердить заказ
 3. successful_payment — начислить GTON
 """
+from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
