@@ -258,7 +258,7 @@ class AIAvatarService(BaseService):
     async def _show_main_menu(self, user_id: int) -> Response:
         """Показать главное меню сервиса"""
         # Очищаем состояние
-        await self.core_api.user_state.clear(user_id, f"{SERVICE_ID}:*")
+        await self.core.user_state.clear(user_id, f"{SERVICE_ID}:*")
         
         return Response(
             text=msg.MAIN_MENU,
@@ -267,7 +267,7 @@ class AIAvatarService(BaseService):
     
     async def get_config_value(self, key: str, default=None):
         """Получить значение из конфигурации сервиса"""
-        config = await self.core_api.service_config.get(SERVICE_ID)
+        config = await self.core.service_config.get(SERVICE_ID)
         return config.get(key, default)
     
     # ==================== КОНФИГУРАЦИЯ ====================
