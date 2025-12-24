@@ -37,6 +37,7 @@ def setup_handlers(application: Application):
     
     # Callback handler (single router)
     application.add_handler(CallbackQueryHandler(callback_router))
+    logger.warning("🔥 CallbackQueryHandler registered with callback_router")
     
     # Message handler (text)
     application.add_handler(MessageHandler(
