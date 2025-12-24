@@ -10,6 +10,7 @@ from core.platform.telegram.utils import (
     get_user_language,
     build_keyboard
 )
+from core.settings import settings_manager
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -18,11 +19,16 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = await get_or_create_user(telegram_user.id, telegram_user)
     lang = await get_user_language(user_id)
     
+    # Get support username from settings
+    support_username = await settings_manager.get("general.support_username") or "@support"
+    if not support_username.startswith("@"):
+        support_username = f"@{support_username}"
+    
     text = t(lang, "HELP.title") + "\n\n"
-    text += t(lang, "HELP.description")
+    text += t(lang, "HELP.description") + f" {support_username}"
     
     keyboard = [
-        [{"text": t(lang, "HELP.support"), "url": "https://t.me/support"}],
+        [{"text": t(lang, "HELP.support"), "url": f"https://t.me/{support_username.lstrip('@')}"}],
         [{"text": t(lang, "COMMON.back"), "callback_data": "main_menu"}]
     ]
     
@@ -42,11 +48,16 @@ async def help_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = await get_or_create_user(telegram_user.id, telegram_user)
     lang = await get_user_language(user_id)
     
+    # Get support username from settings
+    support_username = await settings_manager.get("general.support_username") or "@support"
+    if not support_username.startswith("@"):
+        support_username = f"@{support_username}"
+    
     text = t(lang, "HELP.title") + "\n\n"
-    text += t(lang, "HELP.description")
+    text += t(lang, "HELP.description") + f" {support_username}"
     
     keyboard = [
-        [{"text": t(lang, "HELP.support"), "url": "https://t.me/support"}],
+        [{"text": t(lang, "HELP.support"), "url": f"https://t.me/{support_username.lstrip('@')}"}],
         [{"text": t(lang, "COMMON.back"), "callback_data": "main_menu"}]
     ]
     
