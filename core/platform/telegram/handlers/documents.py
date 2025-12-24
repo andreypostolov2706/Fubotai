@@ -4,7 +4,7 @@ Documents Handler - Terms and Privacy Policy
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 
-from core.database.repositories.user import get_or_create_user, get_user_language
+from core.platform.telegram.utils import get_or_create_user, get_user_language
 
 
 async def documents_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
