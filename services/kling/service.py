@@ -220,7 +220,15 @@ class KlingService(BaseService):
                 elif sub_action == "audio":
                     result = await self.settings_handler.show_audio_selection(user_id)
                 else:
-                    result = await self.settings_handler.show_settings(user_id)
+                    # Проверяем контекст - если в процессе генерации, возвращаемся к подтверждению
+                    state, state_data = await self.core.get_user_state(user_id)
+                    if state and state in ["confirm_generation", "confirm_edit"] and state_data:
+                        if state_data.get("mode") == "image_to_video":
+                            result = await self.edit_handler.show_confirmation(user_id, state_data)
+                        else:
+                            result = await self.generate_handler.show_confirmation(user_id, state_data)
+                    else:
+                        result = await self.settings_handler.show_settings(user_id)
                 
                 return Response(text=result["text"], keyboard=result["keyboard"])
             

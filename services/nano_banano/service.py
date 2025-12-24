@@ -259,6 +259,13 @@ class NanoBananoService(BaseService):
                 elif sub_action == "resolution":
                     result = await self.settings_handler.show_resolution_selection(user_id)
                 else:
+                    # Проверяем контекст - если в процессе генерации, показываем edit_params
+                    state, state_data = await self.core.get_user_state(user_id)
+                    if state and state == "confirming" and state_data:
+                        return Response(
+                            text=msg.EDIT_PARAMS_MENU,
+                            keyboard=kb.edit_params_keyboard()
+                        )
                     result = await self.settings_handler.show_settings(user_id)
                 
                 return Response(text=result["text"], keyboard=result["keyboard"])
