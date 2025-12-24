@@ -48,6 +48,7 @@ async def main_menu_kb(user_id: int, lang: str = "ru"):
         try:
             user_data = UserServiceDTO()  # TODO: load from DB
             service_items = service.get_user_menu_items(user_id, user_data)
+            logger.info(f"Service {service.info.id} menu items: {[(item.text, item.callback) for item in service_items]}")
             menu_items.extend(service_items)
         except Exception as e:
             logger.error(f"Error getting menu items from {service.info.id}: {e}")
@@ -64,6 +65,7 @@ async def main_menu_kb(user_id: int, lang: str = "ru"):
             if item.badge:
                 btn_text += f" {item.badge}"
             row.append({"text": btn_text, "callback_data": item.callback})
+            logger.info(f"Adding button: text='{btn_text}', callback='{item.callback}'")
             
             if len(row) == 2:
                 keyboard.append(row)
@@ -72,6 +74,8 @@ async def main_menu_kb(user_id: int, lang: str = "ru"):
     # Add remaining button if odd number
     if row:
         keyboard.append(row)
+    
+    logger.info(f"Final keyboard: {keyboard}")
     
     # Add admin buttons if admin
     telegram_id = await get_user_telegram_id(user_id)
