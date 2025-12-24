@@ -1,6 +1,8 @@
 """
 Base Service - Abstract class for all services
 """
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, Any, TYPE_CHECKING
