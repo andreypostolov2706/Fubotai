@@ -1,6 +1,8 @@
 """
 Telegram Setup - Register all handlers
 """
+from __future__ import annotations
+
 from telegram.ext import (
     Application,
     CommandHandler,

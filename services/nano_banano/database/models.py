@@ -1,6 +1,8 @@
 """
 Nano Banano — Database Models
 """
+from __future__ import annotations
+
 from datetime import datetime
 from sqlalchemy import (
     Column, Integer, BigInteger, String, DateTime, 

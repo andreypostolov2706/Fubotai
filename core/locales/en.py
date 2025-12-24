@@ -2,6 +2,8 @@
 English Localization
 """
 
+from __future__ import annotations
+
 LANGUAGE_CODE = "en"
 LANGUAGE_NAME = "English"
 LANGUAGE_FLAG = "🇬🇧"

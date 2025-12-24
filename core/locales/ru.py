@@ -2,6 +2,8 @@
 Russian Localization (Main)
 """
 
+from __future__ import annotations
+
 LANGUAGE_CODE = "ru"
 LANGUAGE_NAME = "Русский"
 LANGUAGE_FLAG = "🇷🇺"

@@ -1,6 +1,8 @@
 """
 Admin Broadcast - Full Implementation
 """
+from __future__ import annotations
+
 import asyncio
 import html
 from datetime import datetime, timedelta
