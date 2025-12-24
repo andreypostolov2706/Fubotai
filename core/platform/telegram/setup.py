@@ -11,7 +11,7 @@ from telegram.ext import (
 )
 from loguru import logger
 
-from .handlers import start_command, help_command, documents_command, message_handler, test_media_command
+from .handlers import start_command, help_command, documents_command, topup_command, message_handler, test_media_command
 from .handlers.payments import handle_pre_checkout, handle_successful_payment
 from .router import callback_router
 
@@ -23,6 +23,7 @@ def setup_handlers(application: Application):
     application.add_handler(CommandHandler("start", start_command))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("doc", documents_command))
+    application.add_handler(CommandHandler("topup", topup_command))
     application.add_handler(CommandHandler("test_media", test_media_command))
     
     # Payment handlers (Telegram Stars)

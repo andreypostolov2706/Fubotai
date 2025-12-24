@@ -9,6 +9,7 @@ from .start import (
 )
 from .settings import settings_callback, language_callback, set_language_callback
 from .topup import topup_callback
+from .topup_command import topup_command
 from .partner import partner_callback
 from .daily_bonus import daily_bonus_callback
 from .help import help_command, help_callback
@@ -26,6 +27,7 @@ __all__ = [
     "language_callback",
     "set_language_callback",
     "topup_callback",
+    "topup_command",
     "partner_callback",
     "daily_bonus_callback",
     "help_command",
