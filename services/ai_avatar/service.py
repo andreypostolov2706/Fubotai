@@ -128,11 +128,12 @@ class AIAvatarService(BaseService):
         
         Формат: service:ai_avatar:{action}:{params}
         """
-        logger.debug(f"AI Avatar: callback action={action}, params={params}")
+        logger.info(f"AI Avatar: handle_callback called - action={action}, params={params}, user_id={user_id}")
         
         try:
             # Главное меню
             if action == "main":
+                logger.info(f"AI Avatar: Showing main menu for user {user_id}")
                 return await self._show_main_menu(user_id)
             
             # Генерация

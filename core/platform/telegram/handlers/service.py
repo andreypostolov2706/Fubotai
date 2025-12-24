@@ -35,18 +35,23 @@ async def service_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle service callbacks"""
     query = update.callback_query
     
+    logger.info(f"Service callback received: {query.data}")
+    
     telegram_user = update.effective_user
     user_id = await get_or_create_user(telegram_user.id, telegram_user)
     
     # Parse callback: service:{service_id}:{action}:{params}
     parts = query.data.split(":")
     if len(parts) < 3:
+        logger.warning(f"Invalid callback format: {query.data}")
         await query.answer("Invalid callback", show_alert=True)
         return
     
     service_id = parts[1]
     action = parts[2]
     params = {}
+    
+    logger.info(f"Parsed: service_id={service_id}, action={action}")
     
     # Парсим все дополнительные параметры
     if len(parts) > 3:
