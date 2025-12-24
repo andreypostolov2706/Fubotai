@@ -4,14 +4,14 @@ AI Avatar — Клавиатуры
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def main_menu_keyboard() -> InlineKeyboardMarkup:
+def main_menu_keyboard():
     """Главное меню сервиса"""
-    return InlineKeyboardMarkup([
-        [InlineKeyboardButton("🎬 Создать видео", callback_data="ai_avatar:generate")],
-        [InlineKeyboardButton("📋 История", callback_data="ai_avatar:history")],
-        [InlineKeyboardButton("⚙️ Настройки", callback_data="ai_avatar:settings")],
-        [InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu")],
-    ])
+    return [
+        [{"text": "🎬 Создать видео", "callback_data": "service:ai_avatar:generate"}],
+        [{"text": "📋 История", "callback_data": "service:ai_avatar:history"}],
+        [{"text": "⚙️ Настройки", "callback_data": "service:ai_avatar:settings"}],
+        [{"text": "🏠 Главное меню", "callback_data": "main_menu"}],
+    ]
 
 
 def input_mode_keyboard() -> InlineKeyboardMarkup:
