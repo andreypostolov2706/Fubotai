@@ -29,6 +29,9 @@ async def callback_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     data = query.data
     
+    from loguru import logger
+    logger.info(f"Callback router received: {data}")
+    
     # Route based on callback data prefix
     if data == "main_menu":
         await main_menu_callback(update, context)
