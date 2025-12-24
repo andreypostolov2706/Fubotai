@@ -2,6 +2,8 @@
 Kling Video v2.6 Service
 Генерация видео с помощью Kling AI через fal.ai
 """
+from __future__ import annotations
+
 import math
 from datetime import datetime
 from decimal import Decimal

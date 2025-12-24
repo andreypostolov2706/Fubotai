@@ -1,6 +1,8 @@
 """
 AI Avatar — Главный класс сервиса
 """
+from __future__ import annotations
+
 from typing import Optional
 from loguru import logger
 

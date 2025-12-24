@@ -2,6 +2,8 @@
 GPT-Image 1.5 Service
 Генерация изображений с помощью OpenAI GPT Image 1.5 через fal.ai
 """
+from __future__ import annotations
+
 import asyncio
 import math
 from datetime import datetime

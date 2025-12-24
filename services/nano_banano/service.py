@@ -1,6 +1,8 @@
 """
 Nano Banano — Главный класс сервиса
 """
+from __future__ import annotations
+
 from typing import Optional
 from datetime import datetime
 from loguru import logger

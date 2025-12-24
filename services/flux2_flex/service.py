@@ -1,6 +1,8 @@
 """
 FLUX 2 Flex Service - Text to Image Generation
 """
+from __future__ import annotations
+
 from decimal import Decimal
 from datetime import datetime
 from loguru import logger

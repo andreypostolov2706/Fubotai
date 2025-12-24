@@ -1,6 +1,8 @@
 """
 Nano Banano — fal.ai API Client
 """
+from __future__ import annotations
+
 import asyncio
 import os
 import time
