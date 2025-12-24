@@ -1,9 +1,10 @@
 """
 Start Handler
 """
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from loguru import logger
+from datetime import datetime
 
 from core.locales import t
 from core.locales.user_texts import USER_TEXTS
@@ -23,6 +24,22 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_user = update.effective_user
     user_id = await get_or_create_user(telegram_user.id, telegram_user)
     lang = await get_user_language(user_id)
+    
+    # Check if user has accepted terms
+    from core.database import get_db
+    from core.database.models import User
+    from sqlalchemy import select
+    
+    async with get_db() as session:
+        result = await session.execute(
+            select(User.terms_accepted).where(User.id == user_id)
+        )
+        terms_accepted = result.scalar_one_or_none()
+    
+    # If terms not accepted, show terms agreement screen
+    if not terms_accepted:
+        await show_terms_agreement(update, user_id)
+        return
     
     # Check for referral code
     if context.args:
@@ -297,3 +314,99 @@ async def get_service_prices_rub() -> dict:
             prices[f"{service}_rub"] = "0.00"
     
     return prices
+
+
+async def show_terms_agreement(update: Update, user_id: int):
+    """Show terms of service agreement screen"""
+    text = (
+        "🤖 <b>Добро пожаловать в FuBotai!</b>\n\n"
+        "Перед началом работы, пожалуйста, ознакомьтесь с нашими документами:\n\n"
+        "📄 <a href='https://telegra.ph/Polzovatelskoe-soglashenie-FuBotai-12-24'>Пользовательское соглашение</a>\n"
+        "🔒 <a href='https://telegra.ph/Politika-konfidencialnosti-FuBotai-12-24'>Политика конфиденциальности</a>\n\n"
+        "Используя бота, вы подтверждаете, что:\n"
+        "✅ Ознакомились с условиями использования\n"
+        "✅ Принимаете Пользовательское соглашение\n"
+        "✅ Согласны с Политикой конфиденциальности\n\n"
+        "<i>Нажмите кнопку ниже для продолжения</i>"
+    )
+    
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("✅ Принимаю условия", callback_data="accept_terms")],
+        [InlineKeyboardButton("❌ Отклонить", callback_data="decline_terms")],
+    ])
+    
+    await update.message.reply_text(
+        text,
+        reply_markup=keyboard,
+        parse_mode="HTML",
+        disable_web_page_preview=True
+    )
+
+
+async def accept_terms_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle terms acceptance"""
+    query = update.callback_query
+    await query.answer()
+    
+    telegram_user = update.effective_user
+    user_id = await get_or_create_user(telegram_user.id, telegram_user)
+    
+    from core.database.models import User
+    from sqlalchemy import select, update as sql_update
+    
+    # Update user's terms acceptance
+    async with get_db() as session:
+        await session.execute(
+            sql_update(User)
+            .where(User.id == user_id)
+            .values(
+                terms_accepted=True,
+                terms_accepted_at=datetime.utcnow()
+            )
+        )
+    
+    logger.info(f"User {user_id} accepted terms of service")
+    
+    # Show main menu
+    lang = await get_user_language(user_id)
+    gton, fiat = await get_user_balance_with_fiat(user_id)
+    prices = await get_service_prices_rub()
+    
+    text = USER_TEXTS["main_menu"]["title"] + "\n"
+    
+    if await is_admin(user_id):
+        text += USER_TEXTS["main_menu"]["description_admin"].format(**prices) + "\n"
+    else:
+        text += USER_TEXTS["main_menu"]["description"].format(**prices) + "\n"
+    
+    if fiat is not None:
+        fiat_str = f"{fiat:,.0f}".replace(",", " ")
+        text += USER_TEXTS["main_menu"]["balance_with_fiat"].format(balance=format_gton(gton), fiat=fiat_str)
+    else:
+        text += USER_TEXTS["main_menu"]["balance"].format(balance=format_gton(gton))
+    
+    keyboard = await main_menu_kb(user_id, lang)
+    
+    await query.edit_message_text(
+        text,
+        reply_markup=keyboard,
+        parse_mode="HTML"
+    )
+
+
+async def decline_terms_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle terms decline"""
+    query = update.callback_query
+    await query.answer()
+    
+    text = (
+        "❌ <b>Использование бота невозможно без принятия условий</b>\n\n"
+        "Для использования FuBotai необходимо принять Пользовательское соглашение "
+        "и Политику конфиденциальности.\n\n"
+        "Если вы передумаете, используйте команду /start для повторного запуска."
+    )
+    
+    await query.edit_message_text(
+        text,
+        parse_mode="HTML"
+    )

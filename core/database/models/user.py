@@ -69,6 +69,8 @@ class User(Base):
     
     # === Onboarding ===
     onboarding_completed: Mapped[bool] = Column(Boolean, default=False)
+    terms_accepted: Mapped[bool] = Column(Boolean, default=False)
+    terms_accepted_at: Mapped[Optional[datetime]] = Column(DateTime, nullable=True)
     
     # === Timestamps ===
     created_at: Mapped[datetime] = Column(

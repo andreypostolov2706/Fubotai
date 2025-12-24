@@ -6,6 +6,8 @@ from telegram.ext import ContextTypes
 
 from .handlers import (
     main_menu_callback,
+    accept_terms_callback,
+    decline_terms_callback,
     settings_callback,
     language_callback,
     set_language_callback,
@@ -29,6 +31,12 @@ async def callback_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Route based on callback data prefix
     if data == "main_menu":
         await main_menu_callback(update, context)
+    
+    elif data == "accept_terms":
+        await accept_terms_callback(update, context)
+    
+    elif data == "decline_terms":
+        await decline_terms_callback(update, context)
     
     elif data == "settings" or data.startswith("settings:"):
         if data == "settings:language":
