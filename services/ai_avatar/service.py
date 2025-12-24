@@ -192,7 +192,7 @@ class AIAvatarService(BaseService):
             
             # Отмена
             elif action == "cancel":
-                await self.core_api.user_state.clear(user_id, f"{SERVICE_ID}:*")
+                await self.core.clear_user_state(user_id)
                 return await self._show_main_menu(user_id)
             
             # Неизвестное действие
@@ -218,10 +218,7 @@ class AIAvatarService(BaseService):
         Обработка текстовых сообщений и медиа от пользователя.
         """
         # Получаем текущее состояние
-        state = await self.core_api.user_state.get(
-            user_id,
-            f"{SERVICE_ID}:state"
-        )
+        state, state_data = await self.core.get_user_state(user_id)
         
         if not state:
             return None
