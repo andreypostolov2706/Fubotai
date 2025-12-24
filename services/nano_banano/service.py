@@ -281,7 +281,7 @@ class NanoBananoService(BaseService):
                 
                 # Проверяем, есть ли активное состояние генерации
                 state, state_data = await self.core.get_user_state(user_id)
-                if state and state in ["confirm_generation", "confirm_edit"] and state_data:
+                if state and state == "confirming" and state_data:
                     # Возвращаемся к подтверждению генерации
                     if state_data.get("mode") == "edit":
                         result = await self.edit_handler._show_confirmation(user_id, state_data)
