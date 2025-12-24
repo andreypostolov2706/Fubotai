@@ -28,7 +28,7 @@ async def install_service():
         async with get_db() as session:
             # Проверяем, не установлен ли уже сервис
             result = await session.execute(
-                select(Service).where(Service.service_id == "ai_avatar")
+                select(Service).where(Service.id == "ai_avatar")
             )
             existing_service = result.scalar_one_or_none()
             
@@ -46,15 +46,13 @@ async def install_service():
             
             # Создаём новую запись сервиса
             service = Service(
-                service_id="ai_avatar",
+                id="ai_avatar",
                 name="AI Avatar",
                 description="Превращает фото в говорящее видео с синхронизацией губ",
                 version="1.0.0",
                 author="FuBot Team",
-                is_active=True,
-                is_installed=True,
-                module_path="services.ai_avatar",
-                class_name="AIAvatarService",
+                status="active",
+                install_path="services.ai_avatar",
                 icon="🎭",
                 config={
                     "fal_api_key": "",
@@ -70,6 +68,20 @@ async def install_service():
                     "max_video_duration": 60,
                     "max_file_size_mb": 10,
                 },
+                permissions=[
+                    "balance:read",
+                    "balance:deduct",
+                    "balance:add",
+                    "notifications:send",
+                    "analytics:track",
+                ],
+                features={
+                    "subscriptions": False,
+                    "broadcasts": False,
+                    "partner_menu": False,
+                    "voice_messages": True,
+                },
+                menu_order=20,
             )
             
             session.add(service)
