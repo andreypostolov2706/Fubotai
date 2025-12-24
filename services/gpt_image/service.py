@@ -258,6 +258,12 @@ class GPTImageService(BaseService):
                 else:
                     result = await self.settings_handler.show_settings(user_id)
                 
+                # Проверяем, есть ли активное состояние генерации
+                state, state_data = await self.core.get_user_state(user_id)
+                if state and state in ["confirm_generation", "confirm_edit"] and state_data:
+                    # Возвращаемся к подтверждению генерации
+                    result = await self._show_confirmation(user_id, state_data)
+                
                 return Response(text=result["text"], keyboard=result["keyboard"])
             
             # История

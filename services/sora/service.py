@@ -156,6 +156,12 @@ class SoraService(BaseService):
             elif action == "save_aspect":
                 value = params.get("0") or params.get("id") or "16:9"
                 await self.core.update_user_service_settings(user_id, {"aspect_ratio": value})
+                
+                # Проверяем, есть ли активное состояние генерации
+                state, state_data = await self.core.get_user_state(user_id)
+                if state and state in ["confirm_generation"] and state_data:
+                    return await self._show_generation_settings(user_id, state_data)
+                
                 return await self._show_settings(user_id)
             
             elif action == "settings_duration":
@@ -169,6 +175,12 @@ class SoraService(BaseService):
             elif action == "save_duration":
                 value = params.get("0") or params.get("id") or "4"
                 await self.core.update_user_service_settings(user_id, {"duration": int(value)})
+                
+                # Проверяем, есть ли активное состояние генерации
+                state, state_data = await self.core.get_user_state(user_id)
+                if state and state in ["confirm_generation"] and state_data:
+                    return await self._show_generation_settings(user_id, state_data)
+                
                 return await self._show_settings(user_id)
             
             # История
