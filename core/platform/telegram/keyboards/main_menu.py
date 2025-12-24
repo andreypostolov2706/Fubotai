@@ -66,8 +66,10 @@ async def main_menu_kb(user_id: int, lang: str = "ru"):
                 btn_text += f" {item.badge}"
             row.append({"text": btn_text, "callback_data": item.callback})
             logger.info(f"Adding button: text='{btn_text}', callback='{item.callback}'")
+            logger.warning(f"🔍 Row before append: {row}")
             
             if len(row) == 2:
+                logger.warning(f"🔍 Appending row to keyboard: {row}")
                 keyboard.append(row)
                 row = []
     
