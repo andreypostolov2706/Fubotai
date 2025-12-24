@@ -1,6 +1,8 @@
 """
 Service Handler - Routes callbacks to services
 """
+from __future__ import annotations
+
 from telegram import Update
 from telegram.ext import ContextTypes
 from loguru import logger
