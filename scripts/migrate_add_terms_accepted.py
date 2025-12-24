@@ -13,6 +13,7 @@ sys.path.insert(0, str(project_root))
 
 from sqlalchemy import text
 from core.database import get_db
+from core.database.connection import db_manager
 from loguru import logger
 
 
@@ -20,6 +21,10 @@ async def migrate():
     """Apply migration to add terms_accepted fields"""
     
     logger.info("Starting migration: add terms_accepted fields")
+    
+    # Initialize database
+    await db_manager.init()
+    logger.info("Database initialized")
     
     async with get_db() as session:
         try:
