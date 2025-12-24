@@ -12,6 +12,7 @@ from .topup import topup_callback
 from .partner import partner_callback
 from .daily_bonus import daily_bonus_callback
 from .help import help_command, help_callback
+from .documents import documents_command, documents_callback
 from .service import service_callback
 from .messages import message_handler
 from .test_media import test_media_command
@@ -29,6 +30,8 @@ __all__ = [
     "daily_bonus_callback",
     "help_command",
     "help_callback",
+    "documents_command",
+    "documents_callback",
     "service_callback",
     "test_media_command",
     "message_handler",

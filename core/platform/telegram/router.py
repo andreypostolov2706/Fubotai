@@ -15,6 +15,7 @@ from .handlers import (
     partner_callback,
     daily_bonus_callback,
     help_callback,
+    documents_callback,
     service_callback,
 )
 from .handlers.settings import notifications_callback
@@ -51,6 +52,9 @@ async def callback_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     elif data == "help":
         await help_callback(update, context)
+    
+    elif data == "documents":
+        await documents_callback(update, context)
     
     elif data == "top_up" or data.startswith("top_up:"):
         await topup_callback(update, context)
