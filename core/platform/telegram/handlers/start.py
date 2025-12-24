@@ -321,8 +321,8 @@ async def show_terms_agreement(update: Update, user_id: int):
     text = (
         "🤖 <b>Добро пожаловать в FuBotai!</b>\n\n"
         "Перед началом работы, пожалуйста, ознакомьтесь с нашими документами:\n\n"
-        "📄 <a href='https://telegra.ph/Polzovatelskoe-soglashenie-FuBotai-12-24'>Пользовательское соглашение</a>\n"
-        "🔒 <a href='https://telegra.ph/Politika-konfidencialnosti-FuBotai-12-24'>Политика конфиденциальности</a>\n\n"
+        "📄 <a href='https://telegra.ph/Politika-konfidencialnosti-AIFull-12-24'>Пользовательское соглашение</a>\n"
+        "🔒 <a href='https://telegra.ph/Polzovatelskoe-soglashenie-AIFull-12-24'>Политика конфиденциальности</a>\n\n"
         "Используя бота, вы подтверждаете, что:\n"
         "✅ Ознакомились с условиями использования\n"
         "✅ Принимаете Пользовательское соглашение\n"
