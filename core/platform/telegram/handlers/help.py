@@ -10,7 +10,7 @@ from core.platform.telegram.utils import (
     get_user_language,
     build_keyboard
 )
-from core.settings import settings_manager
+from core.settings import settings
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -20,7 +20,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = await get_user_language(user_id)
     
     # Get support username from settings
-    support_username = await settings_manager.get("general.support_username") or "@support"
+    support_username = await settings.get("general.support_username") or "@support"
     if not support_username.startswith("@"):
         support_username = f"@{support_username}"
     
@@ -49,7 +49,7 @@ async def help_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang = await get_user_language(user_id)
     
     # Get support username from settings
-    support_username = await settings_manager.get("general.support_username") or "@support"
+    support_username = await settings.get("general.support_username") or "@support"
     if not support_username.startswith("@"):
         support_username = f"@{support_username}"
     
