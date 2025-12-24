@@ -3,6 +3,8 @@ Base Payment Provider
 
 Abstract class for all payment providers.
 """
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
