@@ -13,7 +13,7 @@ async def documents_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = await get_or_create_user(telegram_user.id, telegram_user)
     
     text = (
-        "📚 <b>Документы FuBotai</b>\n\n"
+        "📚 <b>Документы AIFull</b>\n\n"
         "Здесь вы можете ознакомиться с нашими документами:\n\n"
         "📄 <b>Пользовательское соглашение</b>\n"
         "Условия использования бота и сервисов\n\n"
@@ -51,7 +51,7 @@ async def documents_callback(update: Update, context: ContextTypes.DEFAULT_TYPE)
     user_id = await get_or_create_user(telegram_user.id, telegram_user)
     
     text = (
-        "📚 <b>Документы FuBotai</b>\n\n"
+        "📚 <b>Документы AIFull</b>\n\n"
         "Здесь вы можете ознакомиться с нашими документами:\n\n"
         "📄 <b>Пользовательское соглашение</b>\n"
         "Условия использования бота и сервисов\n\n"
